@@ -1,0 +1,5 @@
+bb xs = [ if x < 10 then "BOOM!" else "BANG!" | x <- xs, odd x]
+length' xs = sum [1 | _ <- xs]
+rt = [(a,b,c) | c <- [1..100], b <- [1..c], a <- [1..b], a^2 + b^2 == c^2]
+removeNonLowerCase str = [ c | c <- str, c `elem` ['a'..'z']]
+removeLowerCase str = [ c | c <- str - removeNonLowerCase str]
