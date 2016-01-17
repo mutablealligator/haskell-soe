@@ -161,8 +161,7 @@ myFractal = error "Define me!"
 -- Write a *non-recursive* function to compute the length of a list
 
 lengthNonRecursive :: [a] -> Int
-lengthNonRecursive [] = 0
-lengthNonRecursive a = sum (map (const 1) a)
+lengthNonRecursive l = foldr (\_ x -> x + 1) 0 l
 
 -- `doubleEach [1,20,300,4000]` should return `[2,40,600,8000]`
 
