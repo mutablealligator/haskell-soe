@@ -95,7 +95,11 @@ bigger (Polygon vertices) e = (Polygon (expand vertices))
 --    Write a function
 
 hanoi :: Int -> String -> String -> String -> IO ()
-hanoi = error "Define me!"
+hanoi 0 _ _ _ = putStrLn "Error"
+hanoi 1 a b _  = putStrLn ("move disc from " ++ a ++ " to " ++ b)
+hanoi n a b c = do hanoi (n-1) a c b
+                   hanoi 1 a b c
+                   hanoi (n-1) c b a
 
 --   that, given the number of discs $n$ and peg names $a$, $b$, and $c$,
 --   where a is the starting peg,
