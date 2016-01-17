@@ -125,6 +125,16 @@ hanoi n a b c = do hanoi (n-1) a c b
 -- Write a function `sierpinskiCarpet` that displays this figure on the
 -- screen:
 
+minSize :: Int
+minSize = 5
+
+{-
+fillCarpet :: Window -> Int -> Int -> Int -> IO()
+fillCarpet w x y size
+        = drawInWindow w (withColor Blue
+          (polygon [(), (), (), ()]))
+-}
+
 sierpinskiCarpet :: IO ()
 sierpinskiCarpet = error "Define me!"
 
@@ -151,60 +161,67 @@ myFractal = error "Define me!"
 -- Write a *non-recursive* function to compute the length of a list
 
 lengthNonRecursive :: [a] -> Int
-lengthNonRecursive = error "Define me!"
+lengthNonRecursive [] = 0
+lengthNonRecursive a = sum (map (const 1) a)
 
 -- `doubleEach [1,20,300,4000]` should return `[2,40,600,8000]`
 
 doubleEach :: [Int] -> [Int]
-doubleEach = error "Define me!"
+doubleEach [] = []
+doubleEach (x:xs) = (x*2) : doubleEach xs 
 
 -- Now write a *non-recursive* version of the above.
 
 doubleEachNonRecursive :: [Int] -> [Int]
-doubleEachNonRecursive = error "Define me!"
+doubleEachNonRecurisve [] = []
+doubleEachNonRecursive x = map (*2) x
 
 -- `pairAndOne [1,20,300]` should return `[(1,2), (20,21), (300,301)]`
 
 pairAndOne :: [Int] -> [(Int, Int)]
-pairAndOne = error "Define me!"
+pairAndOne [] = []
+pairAndOne (x:xs) = (x, x+1) : pairAndOne xs 
 
 
 -- Now write a *non-recursive* version of the above.
 
 pairAndOneNonRecursive :: [Int] -> [(Int, Int)]
-pairAndOneNonRecursive = error "Define me!"
+pairAndOneNonRecursive = map (\a -> (a, a+1))
 
 -- `addEachPair [(1,2), (20,21), (300,301)]` should return `[3,41,601]`
 
 addEachPair :: [(Int, Int)] -> [Int]
-addEachPair = error "Define me!"
+addEachPair [] = []
+addEachPair ((x, y) : xs) = (x+y) : addEachPair xs
 
 -- Now write a *non-recursive* version of the above.
 
 addEachPairNonRecursive :: [(Int, Int)] -> [Int]
-addEachPairNonRecursive = error "Define me!"
+addEachPairNonRecursive = map (\(x,y) -> x + y)
 
 -- `minList` should return the *smallest* value in the list. You may assume the
 -- input list is *non-empty*.
 
 minList :: [Int] -> Int
-minList = error "Define me!"
+minList [z] = z
+minList (z:zs) = min z (minList zs)
 
 -- Now write a *non-recursive* version of the above.
 
 minListNonRecursive :: [Int] -> Int
-minListNonRecursive = error "Define me!"
+minListNonRecursive = foldr min (maxBound :: Int)
 
 -- `maxList` should return the *largest* value in the list. You may assume the
 -- input list is *non-empty*.
 
 maxList :: [Int] -> Int
-maxList = error "Define me!"
+maxList [z] = z
+maxList (z:zs) = max z (maxList zs)
 
 -- Now write a *non-recursive* version of the above.
 
 maxListNonRecursive :: [Int] -> Int
-maxListNonRecursive = error "Define me!"
+maxListNonRecursive = foldr max (minBound :: Int)
 
 -- Now, a few functions for this `Tree` type.
 
