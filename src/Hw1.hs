@@ -232,21 +232,21 @@ data Tree a = Leaf a | Branch (Tree a) (Tree a)
 
 fringe :: Tree a -> [a]
 fringe (Leaf x) = [x]
-fringe (Branch x y) = (fringe x ++ fringe y)
+fringe (Branch x y) = (fringe x) ++ (fringe y)
 
 -- `treeSize` should return the number of leaves in the tree.
 -- So: `treeSize (Branch (Leaf 1) (Leaf 2))` should return `2`.
 
 treeSize :: Tree a -> Int
 treeSize (Leaf x) = 1
-treeSize (Branch x y) = treeSize x + treeSize y
+treeSize (Branch x y) = (treeSize x) + (treeSize y)
 
 -- `treeSize` should return the height of the tree.
 -- So: `height (Branch (Leaf 1) (Leaf 2))` should return `1`.
 
 treeHeight :: Tree a -> Int
 treeHeight (Leaf x) = 0
-treeHeight (Branch x y) = 1 + max (treeHeight x) (treeHeight y)
+treeHeight (Branch x y) = 1 + (max (treeHeight x) (treeHeight y))
 
 -- Now, a tree where the values live at the nodes not the leaf.
 
@@ -258,7 +258,9 @@ data InternalTree a = ILeaf | IBranch a (InternalTree a) (InternalTree a)
 -- should return `IBranch 1 ILeaf ILeaf`.
 
 takeTree :: Int -> InternalTree a -> InternalTree a
-takeTree = error "Define me!"
+takeTree 0 _ = ILeaf
+takeTree _ (ILeaf) = ILeaf
+takeTree n (IBranch x y z) = IBranch x (takeTree (n-1) y) (takeTree (n-1) z)
 
 -- `takeTreeWhile p t` should cut of the tree at the nodes that don't satisfy `p`.
 -- So: `takeTreeWhile (< 3) (IBranch 1 (IBranch 2 ILeaf ILeaf) (IBranch 3 ILeaf ILeaf)))`
