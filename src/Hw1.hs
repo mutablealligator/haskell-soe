@@ -228,7 +228,8 @@ data Tree a = Leaf a | Branch (Tree a) (Tree a)
               deriving (Show, Eq)
 
 -- Adding a helper function by exploting the similar sturcture
--- of trees
+-- of trees. This function walks down the tree mimicing a tree
+-- traversal
 foldTree :: (b -> a) -> (a -> a -> a) -> Tree b -> a
 foldTree leafFn mergeFn (Leaf x) = leafFn x
 foldTree leafFn mergeFn (Branch b1 b2) = 
