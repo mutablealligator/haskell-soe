@@ -227,26 +227,31 @@ maxListNonRecursive = foldr max (minBound :: Int)
 data Tree a = Leaf a | Branch (Tree a) (Tree a)
               deriving (Show, Eq)
 
+-- Adding a helper function by exploting the similar sturcture
+-- of trees
+foldTree :: (b -> a) -> (a -> a -> a) -> Tree b -> a
+foldTree leafFn mergeFn (Leaf x) = leafFn x
+foldTree leafFn mergeFn (Branch b1 b2) = 
+         mergeFn (foldTree leafFn mergeFn b1)
+                (foldTree leafFn mergeFn b2)
+
 -- `fringe t` should return a list of all the values occurring as a `Leaf`.
 -- So: `fringe (Branch (Leaf 1) (Leaf 2))` should return `[1,2]`
 
 fringe :: Tree a -> [a]
-fringe (Leaf x) = [x]
-fringe (Branch x y) = (fringe x) ++ (fringe y)
+fringe = foldTree (\z -> [z]) (\x y -> x ++ y)
 
 -- `treeSize` should return the number of leaves in the tree.
 -- So: `treeSize (Branch (Leaf 1) (Leaf 2))` should return `2`.
 
 treeSize :: Tree a -> Int
-treeSize (Leaf x) = 1
-treeSize (Branch x y) = (treeSize x) + (treeSize y)
+treeSize = foldTree (\z -> 1) (\x y -> x + y)
 
 -- `treeSize` should return the height of the tree.
 -- So: `height (Branch (Leaf 1) (Leaf 2))` should return `1`.
 
 treeHeight :: Tree a -> Int
-treeHeight (Leaf x) = 0
-treeHeight (Branch x y) = 1 + (max (treeHeight x) (treeHeight y))
+treeHeight = foldTree (\z -> 0) (\x y -> 1 + (max x y))
 
 -- Now, a tree where the values live at the nodes not the leaf.
 
@@ -258,8 +263,8 @@ data InternalTree a = ILeaf | IBranch a (InternalTree a) (InternalTree a)
 -- should return `IBranch 1 ILeaf ILeaf`.
 
 takeTree :: Int -> InternalTree a -> InternalTree a
-takeTree 0 _ = ILeaf
-takeTree _ (ILeaf) = ILeaf
+takeTree 0 t = ILeaf
+takeTree n (ILeaf) = ILeaf
 takeTree n (IBranch x y z) = IBranch x (takeTree (n-1) y) (takeTree (n-1) z)
 
 -- `takeTreeWhile p t` should cut of the tree at the nodes that don't satisfy `p`.
