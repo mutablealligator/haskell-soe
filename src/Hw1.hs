@@ -263,22 +263,32 @@ data InternalTree a = ILeaf | IBranch a (InternalTree a) (InternalTree a)
 -- So `takeTree 1 (IBranch 1 (IBranch 2 ILeaf ILeaf) (IBranch 3 ILeaf ILeaf)))`
 -- should return `IBranch 1 ILeaf ILeaf`.
 
-takeTree :: Int -> InternalTree a -> InternalTree a
-takeTree 0 t = ILeaf
-takeTree n (ILeaf) = ILeaf
+takeTree                   :: Int -> InternalTree a -> InternalTree a
+takeTree 0 t               = ILeaf
+takeTree n (ILeaf)         = ILeaf
 takeTree n (IBranch x y z) = IBranch x (takeTree (n-1) y) (takeTree (n-1) z)
 
 -- `takeTreeWhile p t` should cut of the tree at the nodes that don't satisfy `p`.
 -- So: `takeTreeWhile (< 3) (IBranch 1 (IBranch 2 ILeaf ILeaf) (IBranch 3 ILeaf ILeaf)))`
 -- should return `(IBranch 1 (IBranch 2 ILeaf ILeaf) ILeaf)`.
 
-takeTreeWhile :: (a -> Bool) -> InternalTree a -> InternalTree a
-takeTreeWhile = error "Define me!"
+takeTreeWhile                                     :: (a -> Bool) -> InternalTree a -> InternalTree a
+takeTreeWhile operation ILeaf                     = ILeaf
+takeTreeWhile operation (IBranch leaf left right) = if (operation leaf) 
+                                                    then IBranch leaf (takeTreeWhile operation left)
+                                                                      (takeTreeWhile operation right)
+                                                    else ILeaf
 
 -- Write the function map in terms of foldr:
 
 myMap :: (a -> b) -> [a] -> [b]
-myMap = error "Define me!"
+
+{-
+myMap f [] = []
+myMap f xs = foldr (\y ys -> (f y) : ys) [] (xs)
+-}
+
+myMap f = foldr ((:).f) []
 
 -- Part 4: Transforming XML Documents
 -- ----------------------------------
