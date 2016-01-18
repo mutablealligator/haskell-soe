@@ -231,19 +231,22 @@ data Tree a = Leaf a | Branch (Tree a) (Tree a)
 -- So: `fringe (Branch (Leaf 1) (Leaf 2))` should return `[1,2]`
 
 fringe :: Tree a -> [a]
-fringe = error "Define me!"
+fringe (Leaf x) = [x]
+fringe (Branch x y) = (fringe x ++ fringe y)
 
 -- `treeSize` should return the number of leaves in the tree.
 -- So: `treeSize (Branch (Leaf 1) (Leaf 2))` should return `2`.
 
 treeSize :: Tree a -> Int
-treeSize = error "Define me!"
+treeSize (Leaf x) = 1
+treeSize (Branch x y) = treeSize x + treeSize y
 
 -- `treeSize` should return the height of the tree.
 -- So: `height (Branch (Leaf 1) (Leaf 2))` should return `1`.
 
 treeHeight :: Tree a -> Int
-treeHeight = error "Define me!"
+treeHeight (Leaf x) = 0
+treeHeight (Branch x y) = 1 + max (treeHeight x) (treeHeight y)
 
 -- Now, a tree where the values live at the nodes not the leaf.
 
