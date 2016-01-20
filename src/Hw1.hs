@@ -46,20 +46,20 @@ type Vertex = (Float, Float)
 --    at the end of Section 2.1 (Exercise 2.1). Each should return a Shape
 --    built with the Polygon constructor.
 
-rectangle :: Side -> Side -> Shape
+rectangle     :: Side -> Side -> Shape
 rectangle a b = Polygon [(x, y),  (-x, y), (-x, -y), (x, -y)]
                 where x = a/2
                       y = b/2
 
-rtTriangle :: Side -> Side -> Shape
+rtTriangle     :: Side -> Side -> Shape
 rtTriangle a b = Polygon [(0, 0), (a, 0), (0, b)]
 
 -- 2. Define	 a function
 
-sides :: Shape -> Int
-sides (Rectangle _ _) = 4
-sides (Ellipse _ _) = 42
-sides (RtTriangle _ _) = 3
+sides                    :: Shape -> Int
+sides (Rectangle _ _)    = 4
+sides (Ellipse _ _)      = 42
+sides (RtTriangle _ _)   = 3
 sides (Polygon vertices) = if (length vertices > 2) then length vertices else 0 
 
 --   which returns the number of sides a given shape has.
@@ -68,12 +68,12 @@ sides (Polygon vertices) = if (length vertices > 2) then length vertices else 0
 
 -- 3. Define a function
 
-bigger :: Shape -> Float -> Shape
-bigger (Rectangle x y) e = (Rectangle (x * (sqrt e)) (y * (sqrt e)))
-bigger (Ellipse x y) e = (Ellipse (x * (sqrt e)) (y * (sqrt e)))
-bigger (RtTriangle x y) e = (RtTriangle (x * (sqrt e)) (y * (sqrt e)))
-bigger (Polygon []) e = (Polygon [])
-bigger (Polygon vertices) e = (Polygon (expand vertices))
+bigger                      :: Shape -> Float -> Shape
+bigger (Rectangle x y) e    = (Rectangle  (x * (sqrt e)) (y * (sqrt e)))
+bigger (Ellipse x y) e      = (Ellipse    (x * (sqrt e)) (y * (sqrt e)))
+bigger (RtTriangle x y) e   = (RtTriangle (x * (sqrt e)) (y * (sqrt e)))
+bigger (Polygon []) e       = (Polygon    [])
+bigger (Polygon vertices) e = (Polygon    (expand vertices))
                               where expand = map (\(x,y) -> (x * (sqrt e), y * (sqrt e)))
 
 --   that takes a shape `s` and expansion factor `e` and returns
@@ -94,9 +94,9 @@ bigger (Polygon vertices) e = (Polygon (expand vertices))
 
 --    Write a function
 
-hanoi :: Int -> String -> String -> String -> IO ()
+hanoi         :: Int -> String -> String -> String -> IO ()
 hanoi 0 _ _ _ = putStrLn "Error"
-hanoi 1 a b _  = putStrLn ("move disc from " ++ a ++ " to " ++ b)
+hanoi 1 a b _ = putStrLn ("move disc from " ++ a ++ " to " ++ b)
 hanoi n a b c = do hanoi (n-1) a c b
                    hanoi 1 a b c
                    hanoi (n-1) c b a
@@ -186,25 +186,25 @@ myFractal = error "Define me!"
 
 -- Write a *non-recursive* function to compute the length of a list
 
-lengthNonRecursive :: [a] -> Int
+lengthNonRecursive   :: [a] -> Int
 lengthNonRecursive l = foldr (\_ x -> x + 1) 0 l
 
 -- `doubleEach [1,20,300,4000]` should return `[2,40,600,8000]`
 
 doubleEach :: [Int] -> [Int]
-doubleEach [] = []
+doubleEach []     = []
 doubleEach (x:xs) = (x*2) : doubleEach xs 
 
 -- Now write a *non-recursive* version of the above.
 
-doubleEachNonRecursive :: [Int] -> [Int]
+doubleEachNonRecursive    :: [Int] -> [Int]
 doubleEachNonRecurisve [] = []
-doubleEachNonRecursive x = map (*2) x
+doubleEachNonRecursive    = map (\x -> x * 2)
 
 -- `pairAndOne [1,20,300]` should return `[(1,2), (20,21), (300,301)]`
 
-pairAndOne :: [Int] -> [(Int, Int)]
-pairAndOne [] = []
+pairAndOne        :: [Int] -> [(Int, Int)]
+pairAndOne []     = []
 pairAndOne (x:xs) = (x, x+1) : pairAndOne xs 
 
 
@@ -215,8 +215,8 @@ pairAndOneNonRecursive = map (\a -> (a, a+1))
 
 -- `addEachPair [(1,2), (20,21), (300,301)]` should return `[3,41,601]`
 
-addEachPair :: [(Int, Int)] -> [Int]
-addEachPair [] = []
+addEachPair               :: [(Int, Int)] -> [Int]
+addEachPair []            = []
 addEachPair ((x, y) : xs) = (x+y) : addEachPair xs
 
 -- Now write a *non-recursive* version of the above.
@@ -227,8 +227,8 @@ addEachPairNonRecursive = map (\(x,y) -> x + y)
 -- `minList` should return the *smallest* value in the list. You may assume the
 -- input list is *non-empty*.
 
-minList :: [Int] -> Int
-minList [z] = z
+minList        :: [Int] -> Int
+minList [x]    = x
 minList (z:zs) = min z (minList zs)
 
 -- Now write a *non-recursive* version of the above.
@@ -239,8 +239,8 @@ minListNonRecursive = foldr min (maxBound :: Int)
 -- `maxList` should return the *largest* value in the list. You may assume the
 -- input list is *non-empty*.
 
-maxList :: [Int] -> Int
-maxList [z] = z
+maxList        :: [Int] -> Int
+maxList [x]    = x
 maxList (z:zs) = max z (maxList zs)
 
 -- Now write a *non-recursive* version of the above.
@@ -256,29 +256,32 @@ data Tree a = Leaf a | Branch (Tree a) (Tree a)
 -- Adding a helper function by exploting the similar sturcture
 -- of trees. This function walks down the tree mimicing a tree
 -- traversal
-foldTree :: (b -> a) -> (a -> a -> a) -> Tree b -> a
-foldTree leafFn mergeFn (Leaf x) = leafFn x
+foldTree                               :: (b -> a) -> (a -> a -> a) -> Tree b -> a
+foldTree leafFn mergeFn (Leaf x)       = leafFn x
 foldTree leafFn mergeFn (Branch b1 b2) = 
          mergeFn (foldTree leafFn mergeFn b1)
-                (foldTree leafFn mergeFn b2)
+                 (foldTree leafFn mergeFn b2)
 
 -- `fringe t` should return a list of all the values occurring as a `Leaf`.
 -- So: `fringe (Branch (Leaf 1) (Leaf 2))` should return `[1,2]`
 
 fringe :: Tree a -> [a]
-fringe = foldTree (\z -> [z]) (\x y -> x ++ y)
+fringe = foldTree (:[]) (++)
+-- fringe = foldTree (\z -> [z]) (\x y -> x ++ y)
 
 -- `treeSize` should return the number of leaves in the tree.
--- So: `treeSize (Branch (Leaf 1) (Leaf 2))` should return `2`.
+-- So: `treeSizve (Branch (Leaf 1) (Leaf 2))` should return `2`.
 
 treeSize :: Tree a -> Int
-treeSize = foldTree (\z -> 1) (\x y -> x + y)
+treeSize = foldTree (\_ -> 1) (+)
+-- treeSize = foldTree (\z -> 1) (\x y -> x + y)
 
 -- `treeSize` should return the height of the tree.
 -- So: `height (Branch (Leaf 1) (Leaf 2))` should return `1`.
 
 treeHeight :: Tree a -> Int
-treeHeight = foldTree (\z -> 0) (\x y -> 1 + (max x y))
+treeHeight = foldTree (\_ -> 0) (\x y -> 1 + (max x y))
+-- treeHeight = foldTree (\z -> 0) (\x y -> 1 + (max x y))
 
 -- Now, a tree where the values live at the nodes not the leaf.
 
@@ -306,14 +309,11 @@ takeTreeWhile operation (IBranch leaf left right) = if (operation leaf)
                                                     else ILeaf
 
 -- Write the function map in terms of foldr:
-
-myMap :: (a -> b) -> [a] -> [b]
-
+myMap   :: (a -> b) -> [a] -> [b]
 {-
 myMap f [] = []
 myMap f xs = foldr (\y ys -> (f y) : ys) [] (xs)
 -}
-
 myMap f = foldr ((:).f) []
 
 -- Part 4: Transforming XML Documents
