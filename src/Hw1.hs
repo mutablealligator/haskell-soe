@@ -60,7 +60,7 @@ sides                    :: Shape -> Int
 sides (Rectangle _ _)    = 4
 sides (Ellipse _ _)      = 42
 sides (RtTriangle _ _)   = 3
-sides (Polygon vertices) = if (length vertices > 2) then length vertices else 0 
+sides (Polygon vertices) = if (length vertices > 2) then length vertices else 0
 
 --   which returns the number of sides a given shape has.
 --   For the purposes of this exercise, an ellipse has 42 sides,
@@ -173,8 +173,45 @@ sierpinskiCarpet =  runGraphics(
 --    own design.  Be creative!  The only constraint is that it shows some
 --    pattern of recursive self-similarity.
 
+-- | Minimum Size for a diamond
+minSize :: Int
+minSize = 3
+
+-- | Routine to draw a diamond
+fillShape :: Window -> Int -> Int -> Int -> IO ()
+fillShape w x y size =
+     drawInWindow w (withColor Red (polygon
+                    [(x, y),
+                     (x+size, y+size),
+                     (x, y+(2*size)),
+                     (x-size, y+size)
+                    ]))
+
+-- | Recursive split a diamond into five small diamonds
+drawFractal w x y size =
+  if size <= minSize
+  then do fillShape w x y size
+  else let sizeBy3 = size `div` 3
+           twice   = (2 * sizeBy3)
+           four    = (2 * twice)
+    in do drawFractal w x           y           sizeBy3
+          drawFractal w x           (y + twice) sizeBy3
+          drawFractal w x           (y + four)  sizeBy3
+          drawFractal w (x + twice) (y + twice) sizeBy3
+          drawFractal w (x - twice) (y + twice) sizeBy3
+
+-- | Routine to draw a diamond fractal in the window
+myDFractal :: IO ()
+myDFractal
+  = runGraphics (
+    do w <- openWindow "Diamond Fractal" (600, 600)
+       drawFractal w 300 0 293
+       k <- getKey w
+       closeWindow w
+    )
+
 myFractal :: IO ()
-myFractal = error "Define me!"
+myFractal = error "Define me"
 
 -- Part 3: Recursion Etc.
 -- ----------------------
@@ -193,7 +230,7 @@ lengthNonRecursive l = foldr (\_ x -> x + 1) 0 l
 
 doubleEach :: [Int] -> [Int]
 doubleEach []     = []
-doubleEach (x:xs) = (x*2) : doubleEach xs 
+doubleEach (x:xs) = (x*2) : doubleEach xs
 
 -- Now write a *non-recursive* version of the above.
 
@@ -205,7 +242,7 @@ doubleEachNonRecursive    = map (\x -> x * 2)
 
 pairAndOne        :: [Int] -> [(Int, Int)]
 pairAndOne []     = []
-pairAndOne (x:xs) = (x, x+1) : pairAndOne xs 
+pairAndOne (x:xs) = (x, x+1) : pairAndOne xs
 
 
 -- Now write a *non-recursive* version of the above.
@@ -258,7 +295,7 @@ data Tree a = Leaf a | Branch (Tree a) (Tree a)
 -- traversal
 foldTree                               :: (b -> a) -> (a -> a -> a) -> Tree b -> a
 foldTree leafFn mergeFn (Leaf x)       = leafFn x
-foldTree leafFn mergeFn (Branch b1 b2) = 
+foldTree leafFn mergeFn (Branch b1 b2) =
          mergeFn (foldTree leafFn mergeFn b1)
                  (foldTree leafFn mergeFn b2)
 
@@ -303,7 +340,7 @@ takeTree n (IBranch x y z) = IBranch x (takeTree (n-1) y) (takeTree (n-1) z)
 
 takeTreeWhile                                     :: (a -> Bool) -> InternalTree a -> InternalTree a
 takeTreeWhile operation ILeaf                     = ILeaf
-takeTreeWhile operation (IBranch leaf left right) = if (operation leaf) 
+takeTreeWhile operation (IBranch leaf left right) = if (operation leaf)
                                                     then IBranch leaf (takeTreeWhile operation left)
                                                                       (takeTreeWhile operation right)
                                                     else ILeaf
@@ -311,6 +348,7 @@ takeTreeWhile operation (IBranch leaf left right) = if (operation leaf)
 -- Write the function map in terms of foldr:
 myMap   :: (a -> b) -> [a] -> [b]
 {-
+Alternate implementation
 myMap f [] = []
 myMap f xs = foldr (\y ys -> (f y) : ys) [] (xs)
 -}
