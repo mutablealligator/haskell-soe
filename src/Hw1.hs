@@ -201,17 +201,14 @@ drawFractal w x y size =
           drawFractal w (x - twice) (y + twice) sizeBy3
 
 -- | Routine to draw a diamond fractal in the window
-myDFractal :: IO ()
-myDFractal
+myFractal :: IO ()
+myFractal
   = runGraphics (
-    do w <- openWindow "Diamond Fractal" (600, 600)
-       drawFractal w 300 0 293
+    do w <- openWindow "Diamond Fractal" (800, 800)
+       drawFractal w 400 0 393
        k <- getKey w
        closeWindow w
     )
-
-myFractal :: IO ()
-myFractal = error "Define me"
 
 -- Part 3: Recursion Etc.
 -- ----------------------
@@ -347,11 +344,6 @@ takeTreeWhile operation (IBranch leaf left right) = if (operation leaf)
 
 -- Write the function map in terms of foldr:
 myMap   :: (a -> b) -> [a] -> [b]
-{-
-Alternate implementation
-myMap f [] = []
-myMap f xs = foldr (\y ys -> (f y) : ys) [] (xs)
--}
 myMap f = foldr ((:).f) []
 
 -- Part 4: Transforming XML Documents
@@ -443,8 +435,67 @@ myMap f = foldr ((:).f) []
 -- yields the HTML speciﬁed above (but with no whitespace except what's
 -- in the textual data in the original XML).
 
-formatPlay :: SimpleXML -> SimpleXML
-formatPlay xml = PCDATA "WRITE ME!"
+-- | Generic XML helper routines
+-- | ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-- | Wrap the lines with tag
+wrapTags                    :: [ElementName] -> [SimpleXML] -> [SimpleXML]
+wrapTags htmlTags xmlString = foldr (\htmlTag nestedTag -> [Element htmlTag nestedTag])
+                              xmlString htmlTags
+
+-- | Prepend a tag before several tags
+prependTag                         :: SimpleXML -> [SimpleXML] -> [SimpleXML]
+prependTag htmlTag existingHtmlTags = [htmlTag] ++ existingHtmlTags
+
+-- | Append a tag after several tags
+appendTag                          :: SimpleXML -> [SimpleXML] -> [SimpleXML]
+appendTag htmlTag existingHtmlTags = existingHtmlTags ++ [htmlTag]
+
+-- | Add a break tag
+addBreak :: SimpleXML
+addBreak = (Element "br" [])
+
+-- | Add heading tag for Personae element
+personae :: SimpleXML
+personae = (Element "h2" [(PCDATA "Dramatis Personae")])
+
+-- | Get the first element of the list
+first (x:xs) = x
+
+-- | Flatten the list
+levelize list = foldr (++) [] list
+
+-- | Few variables to be declared
+-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+html :: String
+html = "html"
+
+body :: String
+body = "body"
+
+br :: String
+br = "br"
+
+zero :: Int
+zero = 0
+
+-- | Tranform XML according to the following rules
+xmlTransform               :: String -> Int -> ([SimpleXML] -> [SimpleXML])
+xmlTransform "PLAY" _      = wrapTags [html, body]
+xmlTransform "TITLE" title = wrapTags ["h" ++ show title]
+xmlTransform "PERSONAE" p  = prependTag personae
+xmlTransform "PERSONA" p   = appendTag addBreak
+xmlTransform "SPEAKER" s   = \tag -> appendTag addBreak (wrapTags ["b"] tag)
+xmlTransform "LINE" line   = appendTag addBreak
+xmlTransform _ _           = \htmlTags -> htmlTags
+
+-- | Format the play by applying the previous transformation rules
+formatPlay     :: SimpleXML -> SimpleXML
+formatPlay xml = let convert depth (Element tag nested) =
+                             (xmlTransform tag depth)
+                             (levelize (map (convert (depth + 1)) nested))
+                     convert _ tag = [tag]
+                 in first (convert zero xml)
 
 -- The main action that we've provided below will use your function to
 -- generate a ﬁle `dream.html` from the sample play. The contents of this
