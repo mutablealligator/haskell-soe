@@ -220,10 +220,26 @@ myFractal
 
 -- Write a *non-recursive* function to compute the length of a list
 
+-- Description : Computes the length of a list in a non-recursive manner.
+
+-- Input
+-- @param [a] : a list of anything.
+
+-- Output
+-- @param Int : The length of the list.
+
 lengthNonRecursive   :: [a] -> Int
 lengthNonRecursive l = foldr (\_ x -> x + 1) 0 l
 
 -- `doubleEach [1,20,300,4000]` should return `[2,40,600,8000]`
+
+-- Description : Doubles each element in a list of Ints
+
+-- Input
+-- @param [Int] : a list of Ints.
+
+-- Output
+-- @param [Int] : a list of Ints, with element doubled.
 
 doubleEach :: [Int] -> [Int]
 doubleEach []     = []
@@ -231,11 +247,30 @@ doubleEach (x:xs) = (x*2) : doubleEach xs
 
 -- Now write a *non-recursive* version of the above.
 
+-- Description : Doubles each element in a list of Ints in a non-recursive
+-- fashion.
+
+-- Input
+-- @param [Int] : a list of Ints.
+
+-- Output
+-- @param [Int] : a list of Ints, which element doubled.
+
 doubleEachNonRecursive    :: [Int] -> [Int]
 doubleEachNonRecurisve [] = []
 doubleEachNonRecursive    = map (\x -> x * 2)
 
--- `pairAndOne [1,20,300]` should return `[(1,2), (20,21), (300,301)]`
+-- `pairAndOne [1,20,300]` should return `[(1,2), (20,21), (300,301)]
+
+-- Description : Given a list of Ints, this function computes a list of pairs of
+-- Ints, where the second element of the pair is one greater than the first
+-- element of the pair.
+
+-- Input
+-- @param [Int] : a list of Ints.
+
+-- Output
+-- @param [(Int, Int)] : a list of pairs of Int.
 
 pairAndOne        :: [Int] -> [(Int, Int)]
 pairAndOne []     = []
@@ -244,10 +279,29 @@ pairAndOne (x:xs) = (x, x+1) : pairAndOne xs
 
 -- Now write a *non-recursive* version of the above.
 
+-- Description : Given a list of Ints, this function returns a list of pairs of
+-- Ints in a non-recursive fashion, where the second element of the pair is one
+-- greater than the first element of the pair.
+
+-- Input
+-- @param [Int] : a list of Ints.
+
+-- Output
+-- @param [(Int, Int)] : a list of pairs of Int.
+
 pairAndOneNonRecursive :: [Int] -> [(Int, Int)]
 pairAndOneNonRecursive = map (\a -> (a, a+1))
 
 -- `addEachPair [(1,2), (20,21), (300,301)]` should return `[3,41,601]`
+
+-- Description : Given a list of pairs of Ints, this function returns computes
+-- the sum of each pair and returns these sums as a list of Ints.
+
+-- Input
+-- @param [(Int, Int)] : a list of pairs of Ints.
+
+-- Output
+-- @param [Int] : a list of Ints whwre each element is sum of a pair of Ints.
 
 addEachPair               :: [(Int, Int)] -> [Int]
 addEachPair []            = []
@@ -255,11 +309,29 @@ addEachPair ((x, y) : xs) = (x+y) : addEachPair xs
 
 -- Now write a *non-recursive* version of the above.
 
+-- Description : Given a list of pairs of Ints, this function computes the sum
+-- of each pair in a non-recursive fashion and returns these sums as a list of
+-- Ints.
+
+-- Input
+-- @param [(Int, Int)] : a list of pairs of Ints.
+
+-- Output
+-- @param [Int] : a list of Ints whwre each element is sum of a pair of Ints.
+
 addEachPairNonRecursive :: [(Int, Int)] -> [Int]
 addEachPairNonRecursive = map (\(x,y) -> x + y)
 
 -- `minList` should return the *smallest* value in the list. You may assume the
 -- input list is *non-empty*.
+
+-- Description : Computes the smallest value in the list.
+
+-- Input
+-- @param [Int] : a list of Ints.
+
+-- Output
+-- @param Int : the smallest value in the list.
 
 minList        :: [Int] -> Int
 minList [x]    = x
@@ -267,17 +339,43 @@ minList (z:zs) = min z (minList zs)
 
 -- Now write a *non-recursive* version of the above.
 
+-- Description : Computes the smallest value in the list in a non-recursive
+-- fashion.
+
+-- Input
+-- @param [Int] : a list of Ints.
+
+-- Output
+-- @param Int : the smallest value in the list.
+
 minListNonRecursive :: [Int] -> Int
 minListNonRecursive = foldr min (maxBound :: Int)
 
 -- `maxList` should return the *largest* value in the list. You may assume the
 -- input list is *non-empty*.
 
+-- Description : Computes the largest value in the list.
+
+-- Input
+-- @param [Int] : a list of Ints.
+
+-- Output
+-- @param Int : the largest value in the list.
+
 maxList        :: [Int] -> Int
 maxList [x]    = x
 maxList (z:zs) = max z (maxList zs)
 
 -- Now write a *non-recursive* version of the above.
+
+-- Description : Computes the largest value in the list in a non-recursive
+-- fashion.
+
+-- Input
+-- @param [Int] : a list of Ints.
+
+-- Output
+-- @param Int : the largest value in the list.
 
 maxListNonRecursive :: [Int] -> Int
 maxListNonRecursive = foldr max (minBound :: Int)
@@ -299,6 +397,15 @@ foldTree leafFn mergeFn (Branch b1 b2) =
 -- `fringe t` should return a list of all the values occurring as a `Leaf`.
 -- So: `fringe (Branch (Leaf 1) (Leaf 2))` should return `[1,2]`
 
+-- Description : This function returns all the 'Leaf' nodes of the 'Tree' as a
+-- list.
+
+-- Input
+-- @param Tree a
+
+-- Output
+-- @param [a] : list of all the 'Leaf' nodes of Tree a.
+
 fringe :: Tree a -> [a]
 fringe = foldTree (:[]) (++)
 -- fringe = foldTree (\z -> [z]) (\x y -> x ++ y)
@@ -306,12 +413,28 @@ fringe = foldTree (:[]) (++)
 -- `treeSize` should return the number of leaves in the tree.
 -- So: `treeSizve (Branch (Leaf 1) (Leaf 2))` should return `2`.
 
+-- Description : This function returns the number of leaves in the tree.
+
+-- Input
+-- @param Tree a
+
+-- Output
+-- @param Int : the number of leaves in the tree.
+
 treeSize :: Tree a -> Int
 treeSize = foldTree (\_ -> 1) (+)
 -- treeSize = foldTree (\z -> 1) (\x y -> x + y)
 
 -- `treeSize` should return the height of the tree.
 -- So: `height (Branch (Leaf 1) (Leaf 2))` should return `1`.
+
+-- Description : This function returns the height of the tree..
+
+-- Input
+-- @param Tree a
+
+-- Output
+-- @param Int : height of the tree.
 
 treeHeight :: Tree a -> Int
 treeHeight = foldTree (\_ -> 0) (\x y -> 1 + (max x y))
@@ -326,16 +449,39 @@ data InternalTree a = ILeaf | IBranch a (InternalTree a) (InternalTree a)
 -- So `takeTree 1 (IBranch 1 (IBranch 2 ILeaf ILeaf) (IBranch 3 ILeaf ILeaf)))`
 -- should return `IBranch 1 ILeaf ILeaf`.
 
+-- Description : This function cut off the tree at a specified depth.
+
+-- Input
+-- @param Int : The depth n at which the tree should be cut.
+
+-- @param InternalTree a
+
+-- Output
+-- @param InternalTree : The tree cut off at specified depth.
+
 takeTree                   :: Int -> InternalTree a -> InternalTree a
 takeTree 0 t               = ILeaf
 takeTree n (ILeaf)         = ILeaf
 takeTree n (IBranch x y z) = IBranch x (takeTree (n-1) y) (takeTree (n-1) z)
 
--- `takeTreeWhile p t` should cut of the tree at the nodes that don't satisfy `p`.
--- So: `takeTreeWhile (< 3) (IBranch 1 (IBranch 2 ILeaf ILeaf) (IBranch 3 ILeaf ILeaf)))`
+-- `takeTreeWhile p t` should cut of the tree at the nodes that don't satisfy
+-- `p`. So: `takeTreeWhile (< 3) (IBranch 1 (IBranch 2 ILeaf ILeaf)
+--                                          (IBranch 3 ILeaf ILeaf)))`
 -- should return `(IBranch 1 (IBranch 2 ILeaf ILeaf) ILeaf)`.
 
-takeTreeWhile                                     :: (a -> Bool) -> InternalTree a -> InternalTree a
+-- Description : This function takes a condition - an operation - and cuts the
+-- tree at the nodes  that don't satisfy the condition.
+
+-- Input
+-- @param operation : an operation on the leaf of an InternalTree, that returns
+-- a bool result to indicate whether a condition was satisfied by this 'Leaf'.
+
+-- @param InternalTree a
+
+-- Output
+-- @param InternalTree : The tree cut off at specified depth.
+
+takeTreeWhile :: (a -> Bool) -> InternalTree a -> InternalTree a
 takeTreeWhile operation ILeaf                     = ILeaf
 takeTreeWhile operation (IBranch leaf left right) = if (operation leaf)
                                                     then IBranch leaf (takeTreeWhile operation left)
@@ -343,6 +489,7 @@ takeTreeWhile operation (IBranch leaf left right) = if (operation leaf)
                                                     else ILeaf
 
 -- Write the function map in terms of foldr:
+
 myMap   :: (a -> b) -> [a] -> [b]
 myMap f = foldr ((:).f) []
 
