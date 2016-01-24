@@ -54,7 +54,7 @@ rectangle a b = Polygon [(x, y),  (-x, y), (-x, -y), (x, -y)]
 rtTriangle     :: Side -> Side -> Shape
 rtTriangle a b = Polygon [(0, 0), (a, 0), (0, b)]
 
--- 2. Define	 a function
+-- 2. Define a function
 
 sides                    :: Shape -> Int
 sides (Rectangle _ _)    = 4
