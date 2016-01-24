@@ -56,11 +56,13 @@ rtTriangle a b = Polygon [(0, 0), (a, 0), (0, b)]
 
 -- 2. Define	 a function
 
-sides                    :: Shape -> Int
-sides (Rectangle _ _)    = 4
-sides (Ellipse _ _)      = 42
-sides (RtTriangle _ _)   = 3
-sides (Polygon vertices) = if (length vertices > 2) then length vertices else 0
+sides                          :: Shape -> Int
+sides (Rectangle _ _)          = 4
+sides (Ellipse _ _)            = 42
+sides (RtTriangle _ _)         = 3
+sides (Polygon vertices)
+      | (length vertices <= 2) = 0
+      | otherwise              = length vertices
 
 --   which returns the number of sides a given shape has.
 --   For the purposes of this exercise, an ellipse has 42 sides,
@@ -220,8 +222,8 @@ myFractal
 
 -- Write a *non-recursive* function to compute the length of a list
 
-lengthNonRecursive   :: [a] -> Int
-lengthNonRecursive l = foldr (\_ x -> x + 1) 0 l
+lengthNonRecursive :: [a] -> Int
+lengthNonRecursive = foldr (\_ x -> x + 1) 0
 
 -- `doubleEach [1,20,300,4000]` should return `[2,40,600,8000]`
 
