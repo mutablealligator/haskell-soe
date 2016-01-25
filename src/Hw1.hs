@@ -18,9 +18,13 @@ import XMLTypes
 
 -- Tell us your name, email and student ID, by replacing the respective
 -- strings below
-
+myName  :: String
 myName  = "Karthikeyan Vasuki Balasubramaniam"
+
+myEmail :: String
 myEmail = "kvasukib@ucsd.edu"
+
+mySID   :: String
 mySID   = "A53094942"
 
 -- Part 1: Defining and Manipulating Shapes
@@ -45,23 +49,44 @@ type Vertex = (Float, Float)
 -- 1. Below, define functions `rectangle` and `rtTriangle` as suggested
 --    at the end of Section 2.1 (Exercise 2.1). Each should return a Shape
 --    built with the Polygon constructor.
+--
+-- Input
+-- @param Side  : Length of rectangle
+-- @param Side  : Breadth of rectangle
 
+-- Output
+-- @param Shape : A Polygon reprsenting rectangle
+--
 rectangle     :: Side -> Side -> Shape
 rectangle a b = Polygon [(x, y),  (-x, y), (-x, -y), (x, -y)]
                 where x = a/2
                       y = b/2
 
+--
+-- Input
+-- @param Side  : Base of triangle
+-- @param Side  : Height of rectangle
+
+-- Output
+-- @param Shape : A Polygon reprsenting right-angled triangle
+--
 rtTriangle     :: Side -> Side -> Shape
 rtTriangle a b = Polygon [(0, 0), (a, 0), (0, b)]
 
 -- 2. Define a function
+--
+-- Input
+-- @param Shape : A Shape represented as a polygon
 
+-- Output
+-- @param Shape : Number of sides of polygon
+--
 sides                          :: Shape -> Int
 sides (Rectangle _ _)          = 4
 sides (Ellipse _ _)            = 42
 sides (RtTriangle _ _)         = 3
 sides (Polygon vertices)
-      | (length vertices <= 2) = 0
+      | length vertices <= 2   = 0
       | otherwise              = length vertices
 
 --   which returns the number of sides a given shape has.
@@ -69,14 +94,21 @@ sides (Polygon vertices)
 --   and empty polygons, single points, and lines have zero sides.
 
 -- 3. Define a function
+--
+-- Input
+-- @param Shape : A Shape represented as a polygon
+-- @param Float : Exapnsion Factor
 
+-- Output
+-- @param Shape : Expanded Polygon
+--
 bigger                      :: Shape -> Float -> Shape
-bigger (Rectangle x y) e    = (Rectangle  (x * (sqrt e)) (y * (sqrt e)))
-bigger (Ellipse x y) e      = (Ellipse    (x * (sqrt e)) (y * (sqrt e)))
-bigger (RtTriangle x y) e   = (RtTriangle (x * (sqrt e)) (y * (sqrt e)))
-bigger (Polygon []) e       = (Polygon    [])
-bigger (Polygon vertices) e = (Polygon    (expand vertices))
-                              where expand = map (\(x,y) -> (x * (sqrt e), y * (sqrt e)))
+bigger (Rectangle x y) e    = Rectangle  (x * sqrt e) (y * sqrt e)
+bigger (Ellipse x y) e      = Ellipse    (x * sqrt e) (y * sqrt e)
+bigger (RtTriangle x y) e   = RtTriangle (x * sqrt e) (y * sqrt e)
+bigger (Polygon []) e       = Polygon    []
+bigger (Polygon vertices) e = Polygon    (expand vertices)
+                              where expand = map (\(x,y) -> (x * sqrt e, y * sqrt e))
 
 --   that takes a shape `s` and expansion factor `e` and returns
 --   a shape which is the same as (i.e., similar to in the geometric sense)
@@ -132,8 +164,8 @@ minimumSize :: Int
 minimumSize = 5
 
 -- Draw a Rectangle with Blue Color and specified co-ordinates
-fillRectangle            :: Window -> Int -> Int -> Int -> IO()
-fillRectangle w x y size = drawInWindow w ( withColor Blue
+fillRectangle       :: Window -> Int -> Int -> IO()
+fillRectangle w x y = drawInWindow w ( withColor Blue
                              (polygon [(x+1, y+1), -- Bottom Left
                                        (x+3, y+3), -- Top Right
                                        (x+1, y+3), -- Top Left
@@ -145,7 +177,7 @@ fillRectangle w x y size = drawInWindow w ( withColor Blue
 sierCarpet            :: Window -> Int -> Int -> Int -> IO()
 sierCarpet w x y size =
                        if size <= minimumSize     -- If size < minimumSize, draw the rectangle
-                       then fillRectangle w x y size
+                       then fillRectangle w x y
                        else let sizeBy3 = size `div` 3
                                 next    = 2 * sizeBy3
                             in do sierCarpet w x             y             sizeBy3
@@ -182,7 +214,7 @@ minSize = 3
 -- | Routine to draw a diamond
 fillShape :: Window -> Int -> Int -> Int -> IO ()
 fillShape w x y size =
-     drawInWindow w (withColor Red (polygon
+     drawInWindow w (withColor Yellow (polygon
                     [(x, y),
                      (x+size, y+size),
                      (x, y+(2*size)),
@@ -190,9 +222,10 @@ fillShape w x y size =
                     ]))
 
 -- | Recursive split a diamond into five small diamonds
+drawFractal            :: Window -> Int -> Int -> Int -> IO ()
 drawFractal w x y size =
   if size <= minSize
-  then do fillShape w x y size
+  then fillShape w x y size
   else let sizeBy3 = size `div` 3
            twice   = (2 * sizeBy3)
            four    = (2 * twice)
@@ -230,8 +263,8 @@ myFractal
 -- Output
 -- @param Int : The length of the list.
 
-lengthNonRecursive   :: [a] -> Int
-lengthNonRecursive l = foldr (\_ x -> x + 1) 0 l
+lengthNonRecursive :: [a] -> Int
+lengthNonRecursive = foldr (\_ x -> x + 1) 0
 
 -- `doubleEach [1,20,300,4000]` should return `[2,40,600,8000]`
 
@@ -259,8 +292,7 @@ doubleEach (x:xs) = (x*2) : doubleEach xs
 -- @param [Int] : a list of Ints, which element doubled.
 
 doubleEachNonRecursive    :: [Int] -> [Int]
-doubleEachNonRecurisve [] = []
-doubleEachNonRecursive    = map (\x -> x * 2)
+doubleEachNonRecursive    = map (* 2)
 
 -- `pairAndOne [1,20,300]` should return `[(1,2), (20,21), (300,301)]
 
@@ -336,6 +368,7 @@ addEachPairNonRecursive = map (\(x,y) -> x + y)
 -- @param Int : the smallest value in the list.
 
 minList        :: [Int] -> Int
+minList []     = error "Input List cannot be empty"
 minList [x]    = x
 minList (z:zs) = min z (minList zs)
 
@@ -365,6 +398,7 @@ minListNonRecursive = foldr min (maxBound :: Int)
 -- @param Int : the largest value in the list.
 
 maxList        :: [Int] -> Int
+maxList []     = error "Input List cannot be empty"
 maxList [x]    = x
 maxList (z:zs) = max z (maxList zs)
 
@@ -391,7 +425,7 @@ data Tree a = Leaf a | Branch (Tree a) (Tree a)
 -- of trees. This function walks down the tree mimicing a tree
 -- traversal
 foldTree                               :: (b -> a) -> (a -> a -> a) -> Tree b -> a
-foldTree leafFn mergeFn (Leaf x)       = leafFn x
+foldTree leafFn _ (Leaf x)             = leafFn x
 foldTree leafFn mergeFn (Branch b1 b2) =
          mergeFn (foldTree leafFn mergeFn b1)
                  (foldTree leafFn mergeFn b2)
@@ -410,7 +444,6 @@ foldTree leafFn mergeFn (Branch b1 b2) =
 
 fringe :: Tree a -> [a]
 fringe = foldTree (:[]) (++)
--- fringe = foldTree (\z -> [z]) (\x y -> x ++ y)
 
 -- `treeSize` should return the number of leaves in the tree.
 -- So: `treeSizve (Branch (Leaf 1) (Leaf 2))` should return `2`.
@@ -424,8 +457,7 @@ fringe = foldTree (:[]) (++)
 -- @param Int : the number of leaves in the tree.
 
 treeSize :: Tree a -> Int
-treeSize = foldTree (\_ -> 1) (+)
--- treeSize = foldTree (\z -> 1) (\x y -> x + y)
+treeSize = foldTree (const 1) (+)
 
 -- `treeSize` should return the height of the tree.
 -- So: `height (Branch (Leaf 1) (Leaf 2))` should return `1`.
@@ -439,8 +471,7 @@ treeSize = foldTree (\_ -> 1) (+)
 -- @param Int : height of the tree.
 
 treeHeight :: Tree a -> Int
-treeHeight = foldTree (\_ -> 0) (\x y -> 1 + (max x y))
--- treeHeight = foldTree (\z -> 0) (\x y -> 1 + (max x y))
+treeHeight = foldTree (const 0) (\x y -> 1 + max x y)
 
 -- Now, a tree where the values live at the nodes not the leaf.
 
@@ -463,7 +494,7 @@ data InternalTree a = ILeaf | IBranch a (InternalTree a) (InternalTree a)
 
 takeTree                   :: Int -> InternalTree a -> InternalTree a
 takeTree 0 t               = ILeaf
-takeTree n (ILeaf)         = ILeaf
+takeTree _ (ILeaf)         = ILeaf
 takeTree n (IBranch x y z) = IBranch x (takeTree (n-1) y) (takeTree (n-1) z)
 
 -- `takeTreeWhile p t` should cut of the tree at the nodes that don't satisfy
@@ -485,7 +516,7 @@ takeTree n (IBranch x y z) = IBranch x (takeTree (n-1) y) (takeTree (n-1) z)
 
 takeTreeWhile :: (a -> Bool) -> InternalTree a -> InternalTree a
 takeTreeWhile operation ILeaf                     = ILeaf
-takeTreeWhile operation (IBranch leaf left right) = if (operation leaf)
+takeTreeWhile operation (IBranch leaf left right) = if operation leaf
                                                     then IBranch leaf (takeTreeWhile operation left)
                                                                       (takeTreeWhile operation right)
                                                     else ILeaf
@@ -602,17 +633,19 @@ appendTag htmlTag existingHtmlTags = existingHtmlTags ++ [htmlTag]
 
 -- | Add a break tag
 addBreak :: SimpleXML
-addBreak = (Element "br" [])
+addBreak = Element "br" []
 
 -- | Add heading tag for Personae element
 personae :: SimpleXML
-personae = (Element "h2" [(PCDATA "Dramatis Personae")])
+personae = Element "h2" [PCDATA "Dramatis Personae"]
 
 -- | Get the first element of the list
-first (x:xs) = x
+first       :: [a] -> a
+first (x:_) = x
 
 -- | Flatten the list
-levelize list = foldr (++) [] list
+levelize :: [[a]] -> [a]
+levelize = foldr (++) []
 
 -- | Few variables to be declared
 -- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -632,11 +665,11 @@ zero = 0
 xmlTransform               :: String -> Int -> ([SimpleXML] -> [SimpleXML])
 xmlTransform "PLAY" _      = wrapTags [html, body]
 xmlTransform "TITLE" title = wrapTags ["h" ++ show title]
-xmlTransform "PERSONAE" p  = prependTag personae
-xmlTransform "PERSONA" p   = appendTag addBreak
-xmlTransform "SPEAKER" s   = \tag -> appendTag addBreak (wrapTags ["b"] tag)
-xmlTransform "LINE" line   = appendTag addBreak
-xmlTransform _ _           = \htmlTags -> htmlTags
+xmlTransform "PERSONAE" _  = prependTag personae
+xmlTransform "PERSONA" _   = appendTag addBreak
+xmlTransform "SPEAKER" _   = appendTag addBreak . wrapTags ["b"]
+xmlTransform "LINE" _      = appendTag addBreak
+xmlTransform _ _           = id
 
 -- | Format the play by applying the previous transformation rules
 formatPlay     :: SimpleXML -> SimpleXML
@@ -650,7 +683,7 @@ formatPlay xml = let convert depth (Element tag nested) =
 -- generate a ﬁle `dream.html` from the sample play. The contents of this
 -- ﬁle after your program runs must be character-for-character identical
 -- to `sample.html`.
-
+mainXML :: IO ()
 mainXML = do writeFile "dream.html" $ xml2string $ formatPlay play
              testResults "dream.html" "sample.html"
 -- >
